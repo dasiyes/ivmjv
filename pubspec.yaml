@@ -1,15 +1,16 @@
 name: ivmjv
-version: 0.1.0
+version: 0.1.1
 description: >-
-  This package is simple tool for validating a string to JSON object
+  This package is a simple tool for validating a string to JSON object
   respecting [RFC8259](https://tools.ietf.org/html/rfc8259)
-homepage: https://ivmanto.dev/ivmjv
+homepage: https://github.com/dasiyes/ivmjv
 repository: https://github.com/dasiyes/ivmjv
 
 environment:
   sdk: '>=2.10.0 <3.0.0'
 
 dependencies:
+  pedantic: ^1.9.2
   meta: ^1.2.4
 
 dev_dependencies:

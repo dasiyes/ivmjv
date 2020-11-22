@@ -23,8 +23,9 @@ class JsonValidator {
     if (json.isEmpty) return false;
 
     // A zero length object is a valid json.
-    if (json.length == 2 && json.startsWith("{") && json.endsWith("}"))
+    if (json.length == 2 && json.startsWith("{") && json.endsWith("}")) {
       return true;
+    }
 
     // Do cycling validation of the Name-Value Pairs
     return _validateNameValuePair(json);

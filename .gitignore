@@ -1,0 +1,18 @@
+.buildlog
+.pub/
+build/
+.dart_tool
+.vscode
+packages
+.packages
+*.dart.js
+*.js_
+*.js.deps
+*.js.map
+workspace.xml
+Dart_Packages.xml
+.DS_Store
+.idea/
+*.aqueduct.pid
+# My own files to exclude from git repo
+_my_files

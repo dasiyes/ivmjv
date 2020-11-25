@@ -6,13 +6,13 @@ import 'package:test/test.dart';
 /// Test class instantiation and validate() function initiation.
 void testJValidInit() {
   /// Test validate function initiation with empty parameter.
-  JsonValidator jv1 = JsonValidator("");
-  bool jv_result1 = jv1.validate();
+  var jv1 = JsonValidator('');
+  var jv_result1 = jv1.validate();
   expect(jv_result1, false);
 
   /// Test validate function initiation with empty ({}) json string).
-  JsonValidator jv2 = JsonValidator("{}");
-  bool jv_result2 = jv2.validate();
+  var jv2 = JsonValidator('{}');
+  var jv_result2 = jv2.validate();
   expect(jv_result2, true);
 
   /// Test validate function initiation with simple json value param provided at class instantiation.

@@ -167,7 +167,7 @@ void test_validateNameValuePair() {
 void testJsonObjects() {
   JsonValidator jv = JsonValidator("");
 
-  /// JSON 1
+  /// JSON 1  [expecct TRUE]
   /// - key/name : string
   /// - key/name : array
   ///   - object
@@ -177,18 +177,18 @@ void testJsonObjects() {
   ///     - key/name : array
   ///     - key/name : number
   ///
-  // bool result1 = jv.validate(
-  //     "{\"nameMain\": \"test\", \"arrayMain\": [{\"name\": \"obj-1\", \"name2\": \"obj-2\"}, {\"array\": [1,2,4]}, {\"name3\": -3}]}");
-  // expect(result1, true);
+  bool result1 = jv.validate(
+      "{\"nameMain\": \"test\", \"arrayMain\": [{\"name\": \"obj-1\", \"name2\": \"obj-2\"}, {\"array\": [1,2,4]}, {\"name3\": -3}]}");
+  expect(result1, true);
 
-  /// JSON 2
+  /// JSON 2  [expecct TRUE]
   /// JSON 1 +
   /// - key/name : number
-  // bool result2 = jv.validate(
-  //     "{\"nameMain\": \"test\", \"arrayMain\": [{\"name\": \"obj-1\", \"name2\": \"obj-2\"}, {\"array\": [1,2,4]}, {\"name3\": -3}], \"kvo\": 34}");
-  // expect(result2, true);
+  bool result2 = jv.validate(
+      "{\"nameMain\": \"test\", \"arrayMain\": [{\"name\": \"obj-1\", \"name2\": \"obj-2\"}, {\"array\": [1,2,4]}, {\"name3\": -3}], \"kvo\": 34}");
+  expect(result2, true);
 
-  /// JSON 3
+  /// JSON 3  [expecct TRUE]
   ///
   /// - key/name : array
   ///   - number
@@ -203,7 +203,7 @@ void testJsonObjects() {
       '{"arrayMain": [1, "fal{se", true, null, -5], "kvo": 34.4, "expon": 1.05e-3}');
   expect(result3, true);
 
-  /// JSON 4
+  /// JSON 4  [expecct TRUE]
   ///
   /// - key/name : array
   ///   - number
@@ -212,24 +212,44 @@ void testJsonObjects() {
   ///   - null
   ///   - negative number
   ///   - negative exp number
+  /// SPECIAL: "]" char within quoted string
   ///
-  // bool result4 =
-  //     jv.validate("{\"arrayMain\": [1, \"fal]se\", false, null, -5, -1.25e7]}");
-  // expect(result4, false);
+  bool result4 =
+      jv.validate("{\"arrayMain\": [1, \"fal]se\", false, null, -5, -1.25e7]}");
+  expect(result4, true);
 
-  /// JSON 5
+  /// JSON 5 [expecct TRUE]
   ///
   /// - array
   ///   - object
   ///   - object
   ///  ... etc.
   ///
-  // bool result5 = jv.validate(
-  //     "[{\"arrayMain\": [1, \"fal]se\", false, null, -5, -1.25e7]}, {\"test\": true}]");
-  // expect(result5, true);
+  bool result5 = jv.validate(
+      "[{\"arrayMain\": [1, \"fal]se\", false, null, -5, -1.25e7]}, {\"test\": true}]");
+  expect(result5, true);
 
-  /// JSON 6
-  // bool result6 = jv.validate(
-  //     "{\"keys\": [{\"kty\":\"RSA\",\"n\":\"_6iKyYXNaobNWiqDPGShr1qiYfElJfPUyIy3MKrKLBNAx9mC6I0YPhcpVLsm-BK5NePwe-gbhTrNMs8TTQG-CHx-mNXsgRlEwUvOtVOT-NyFKIlDW6zbfqCMX6sCTHkbGRsg51asxChZZUSMPvSuMFMuCKrQvJ8ez9RwMvqjL8MvY06La-izj95BGZmtGleOVHXosm9EWefjRFelXiiSf2aObR1bEn9Qt1GBUZ1znyDE0_8lhQUy-rmzjmolts-ZXE6Wp95MgprUC3IH1JmrSJtYjCtYutjDa-9XU3baPNrlsyb_43Lg49hWCHw1nIqEGRDwmCgVTnt81PzoNdj4jQ==\",\"e\":\"AQAB\",\"alg\":\"RS256\",\"use\":\"sig\",\"kid\":\"0bdab256-2eb0-11eb-8ca8-afffbde2b643\"}]}");
-  // expect(result6, false);
+  /// JSON 6 [expecct TRUE]
+  ///
+  /// format of JWKS with single key in the array
+  ///
+  bool result6 = jv.validate(
+      "{\"keys\": [{\"kty\":\"RSA\",\"n\":\"_6iKyYXNaobNWiqDPGShr1qiYfElJfPUyIy3MKrKLBNAx9mC6I0YPhcpVLsm-BK5NePwe-gbhTrNMs8TTQG-CHx-mNXsgRlEwUvOtVOT-NyFKIlDW6zbfqCMX6sCTHkbGRsg51asxChZZUSMPvSuMFMuCKrQvJ8ez9RwMvqjL8MvY06La-izj95BGZmtGleOVHXosm9EWefjRFelXiiSf2aObR1bEn9Qt1GBUZ1znyDE0_8lhQUy-rmzjmolts-ZXE6Wp95MgprUC3IH1JmrSJtYjCtYutjDa-9XU3baPNrlsyb_43Lg49hWCHw1nIqEGRDwmCgVTnt81PzoNdj4jQ==\",\"e\":\"AQAB\",\"alg\":\"RS256\",\"use\":\"sig\",\"kid\":\"0bdab256-2eb0-11eb-8ca8-afffbde2b643\"}]}");
+  expect(result6, true);
+
+  /// JSON 7  [expecct FALSE]
+  ///
+  /// ERROR: Not quoted string value not in (true, false, null).
+  ///
+  bool result7 = jv.validate(
+      "{\"arrayMain\": [1, \"fal]se\", something, null, -5, -1.25e7]}");
+  expect(result7, false);
+
+  /// JSON 7  [expecct FALSE]
+  ///
+  /// ERROR: additional double qoute mark.
+  ///
+  bool result8 = jv
+      .validate("{\"arrayMain\": [1, \"\"fal]se\", false, null, -5, -1.25e7]}");
+  expect(result8, false);
 }

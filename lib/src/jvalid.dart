@@ -91,17 +91,21 @@ class JsonValidator {
     if (spc == '{}') {
       tokens = value.trim().substring(1, value.length - 1);
     } else {
-      tokens = value.trim();
+      if (tokens.isEmpty) {
+        return '';
+      }
     }
 
     // Identify the separators positions for the first k-v pair.
-    int colonIndex = tokens.indexOf(RegExp(r":(?!//)"));
-    int commaIndex = tokens.indexOf(',');
+    int colonIndex = tokens.trim().indexOf(RegExp(r":(?!//)"));
+    int commaIndex = tokens.trim().indexOf(',');
 
     // Get the starting char for the value part of the pair.
-    valueStartsWith = tokens.substring(colonIndex + 1, colonIndex + 2).trim();
+    valueStartsWith =
+        tokens.trim().substring(colonIndex + 1, colonIndex + 2).trim();
     if (valueStartsWith.isEmpty) {
-      valueStartsWith = tokens.substring(colonIndex + 1, colonIndex + 3).trim();
+      valueStartsWith =
+          tokens.trim().substring(colonIndex + 1, colonIndex + 3).trim();
     }
 
     // Define a list of chars that Value part of the pair can start with
@@ -140,7 +144,8 @@ class JsonValidator {
 
     // Extract the Value part from the key-value token;
     if (_possibleFC.contains(valueStartsWith)) {
-      firstPairValue = _getValueObject(tokens.substring(colonIndex + 1).trim());
+      firstPairValue =
+          _getValueObject(tokens.trim().substring(colonIndex + 1).trim());
 
       // If the value part starts with '[' the value may be a valid ARRAY and
       // the commaIndex needs to be redefined
@@ -273,15 +278,23 @@ class JsonValidator {
       // Get the entire array string (find the closing bracket)
       int b = 1;
       String char = '';
+      int dq = 0;
       int closingBracketIndex;
       while (b != 0) {
         // [i] starts from 1 ASSUMING the char at position 0 is already the
         // opening bracket ( '[' or '{') thus b=1
         for (var i = 1; i < tmpHolder.length; i++) {
           char = tmpHolder[i];
-          if (char == '$openBracket') {
+          // make a check for double-quote opennings
+          if (char == '"' && dq == 0) {
+            dq++;
+          } else if (char == '"' && dq == 1) {
+            dq--;
+          }
+
+          if (char == '$openBracket' && dq == 0) {
             b++;
-          } else if (char == '$closeBracket') {
+          } else if (char == '$closeBracket' && dq == 0) {
             b--;
             if (b == 0) {
               closingBracketIndex = i;
@@ -417,7 +430,7 @@ class JsonValidator {
     String _isNum() {
       if (commaIndex == -1) {
         try {
-          num.parse(restValue).toString();
+          num.parse(restValue.trim()).toString();
           return restValue;
         } catch (e) {
           return 'invalid';

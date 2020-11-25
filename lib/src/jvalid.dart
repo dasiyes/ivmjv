@@ -11,11 +11,11 @@ class JsonValidator {
   String json;
   bool _validity = false;
 
-  JsonValidator(String this.json);
+  JsonValidator(this.json);
 
   bool validate([String nestedJson]) {
     if (nestedJson == null) {
-      json = this.json;
+      json = json;
     } else {
       json = nestedJson;
     }
@@ -23,7 +23,7 @@ class JsonValidator {
     if (json.isEmpty) return false;
 
     // A zero length object is a valid json.
-    if (json.length == 2 && json.startsWith("{") && json.endsWith("}")) {
+    if (json.length == 2 && json.startsWith('{') && json.endsWith('}')) {
       return true;
     }
 
@@ -39,7 +39,7 @@ class JsonValidator {
   /// An array is an ordered sequence of zero or more values.
   ///
   bool _validateNameValuePair(String value) {
-    String _value = value.trim();
+    var _value = value.trim();
 
     // define the function exit point
     if (_value.isEmpty) return false;
@@ -54,14 +54,14 @@ class JsonValidator {
 
       // validate an object
       if (_value == 'invalid') {
-        this._validity = false;
+        _validity = false;
         break;
       } else if (_value.isEmpty) {
-        this._validity = true;
+        _validity = true;
       }
     } while (_value.isNotEmpty);
 
-    return this._validity;
+    return _validity;
   }
 
   /// Validate Key-Value Pair
@@ -71,15 +71,15 @@ class JsonValidator {
   String _validateFirstKeyValuePair(String value) {
     //Step-0
     // <<<< ================ Prep & Analyses =============================>>>>
-    bool _validPairName = false;
-    bool _validPairValue = false;
-    bool _isAnArray = false;
+    var _validPairName = false;
+    var _validPairValue = false;
+    var _isAnArray = false;
     String tokens;
     String firstPairName;
     String firstPairValue;
     String valueStartsWith;
     String retValue;
-    String spc = _getSuroundingChars(value.trim());
+    var spc = _getSuroundingChars(value.trim());
 
     // Verify the array
     if (spc == '[]') {
@@ -97,8 +97,8 @@ class JsonValidator {
     }
 
     // Identify the separators positions for the first k-v pair.
-    int colonIndex = tokens.trim().indexOf(RegExp(r":(?!//)"));
-    int commaIndex = tokens.trim().indexOf(',');
+    var colonIndex = tokens.trim().indexOf(RegExp(r':(?!//)'));
+    var commaIndex = tokens.trim().indexOf(',');
 
     // Get the starting char for the value part of the pair.
     valueStartsWith =
@@ -109,7 +109,7 @@ class JsonValidator {
     }
 
     // Define a list of chars that Value part of the pair can start with
-    final List<String> _possibleFC = [
+    final _possibleFC = <String>[
       '"',
       '[',
       '{',
@@ -201,7 +201,7 @@ class JsonValidator {
   /// This function will extract the first pair's value
   String _getValueObject(String restValue) {
     String result;
-    int commaIndex = restValue.indexOf(',');
+    var commaIndex = restValue.indexOf(',');
 
     // <<<<================== Local functions =======================>>>>
 
@@ -210,13 +210,13 @@ class JsonValidator {
     Map<String, List<int>> _calculateEnclosures(
         {@required oBraket, @required cBraket}) {
       // commaIndex will NOT work here due to existing commas within the array.
-      List<int> openingArrayIndexes = [];
-      List<int> closingArrayIndexes = [];
+      var openingArrayIndexes = <int>[];
+      var closingArrayIndexes = <int>[];
 
       // Calc valid array's enclosures
       String char;
-      int dq = 0;
-      int i = 0;
+      var dq = 0;
+      var i = 0;
 
       do {
         char = restValue[i];
@@ -230,7 +230,7 @@ class JsonValidator {
         i++;
       } while (i < restValue.length);
 
-      return {"oil": openingArrayIndexes, "cil": closingArrayIndexes};
+      return {'oil': openingArrayIndexes, 'cil': closingArrayIndexes};
     }
 
     /// Parsing array from the begining of the restValue string
@@ -258,16 +258,14 @@ class JsonValidator {
       }
 
       // Calculate currly brakets enclosures
-      Map<String, List<int>> _cbIndexMap =
-          _calculateEnclosures(oBraket: '{', cBraket: '}');
-      List<int> cbOpenningIndexes = _cbIndexMap['oil'];
-      List<int> cbClosingIndexes = _cbIndexMap['cil'];
+      var _cbIndexMap = _calculateEnclosures(oBraket: '{', cBraket: '}');
+      var cbOpenningIndexes = _cbIndexMap['oil'];
+      var cbClosingIndexes = _cbIndexMap['cil'];
 
       // Calculate square brakets enclosures
-      Map<String, List<int>> _sbIndexMap =
-          _calculateEnclosures(oBraket: '[', cBraket: ']');
-      List<int> sbOpenningIndexes = _sbIndexMap['oil'];
-      List<int> sbClosingIndexes = _sbIndexMap['cil'];
+      var _sbIndexMap = _calculateEnclosures(oBraket: '[', cBraket: ']');
+      var sbOpenningIndexes = _sbIndexMap['oil'];
+      var sbClosingIndexes = _sbIndexMap['cil'];
 
       // Check for correct enclosure
       if (sbOpenningIndexes.length != sbClosingIndexes.length ||
@@ -276,9 +274,9 @@ class JsonValidator {
       }
 
       // Get the entire array string (find the closing bracket)
-      int b = 1;
-      String char = '';
-      int dq = 0;
+      var b = 1;
+      var char = '';
+      var dq = 0;
       int closingBracketIndex;
       while (b != 0) {
         // [i] starts from 1 ASSUMING the char at position 0 is already the
@@ -311,7 +309,7 @@ class JsonValidator {
 
       if (closingBracketIndex > 0 &&
           (tmpHolder.length - 1 >= closingBracketIndex)) {
-        String result = tmpHolder.substring(0, closingBracketIndex + 1);
+        var result = tmpHolder.substring(0, closingBracketIndex + 1);
 
         return result;
       } else {
@@ -322,26 +320,26 @@ class JsonValidator {
     /// Validate an Object previously parsed
     ///
     bool _validateObject(String parsedObject) {
-      return this.validate(parsedObject);
+      return validate(parsedObject);
     }
 
     /// Validate an ARRAY previously parsed
     ///
     bool _validateArray(String parsedArray) {
-      bool validity = false;
+      var validity = false;
       String retval;
-      String arrayBody = parsedArray.substring(1, parsedArray.length - 1);
-      int commaIndex = -1;
+      var arrayBody = parsedArray.substring(1, parsedArray.length - 1);
+      var commaIndex = -1;
       do {
-        String firstChar = arrayBody.trim().substring(0, 1);
+        var firstChar = arrayBody.trim().substring(0, 1);
 
         // Process arrayBody that starts with either one of '[' or '{'
         if (firstChar == '{' || firstChar == '[') {
           do {
-            String nestedElement = _parseEnclosure('$firstChar', arrayBody);
+            var nestedElement = _parseEnclosure('$firstChar', arrayBody);
 
             if (firstChar == '{') {
-              bool validityNestedElement = validate(nestedElement);
+              var validityNestedElement = validate(nestedElement);
 
               if (validityNestedElement) {
                 if (arrayBody.trim().length == nestedElement.trim().length) {
@@ -471,7 +469,7 @@ class JsonValidator {
           return 'invalid';
         }
       } else {
-        String _extVal = restValue.trim().substring(0, commaIndex);
+        var _extVal = restValue.trim().substring(0, commaIndex);
         if (_getSuroundingChars(_extVal) == '""') {
           result = _extVal;
         } else {
@@ -497,10 +495,12 @@ class JsonValidator {
     ///
     String _handleObject() {
       // Invalidate smaller and not valid
-      if (restValue.length == 1 || (restValue.length == 2 && restValue != '{}'))
+      if (restValue.length == 1 ||
+          (restValue.length == 2 && restValue != '{}')) {
         return 'invalid';
+      }
 
-      String parsedObject = _parseEnclosure('{');
+      var parsedObject = _parseEnclosure('{');
 
       // Redefining commaIndex for the comma located after the last closing bracket
       commaIndex = restValue.indexOf(',', parsedObject.length);
@@ -534,7 +534,7 @@ class JsonValidator {
           restValue.endsWith(']') &&
           restValue.length == 2) return '';
 
-      String parsedArray = _parseEnclosure('[');
+      var parsedArray = _parseEnclosure('[');
 
       if (parsedArray == 'invalid') return 'invalid';
 
@@ -559,7 +559,7 @@ class JsonValidator {
 
     /// Getting the lead char of the provided restValue
     if (restValue.isEmpty) return '';
-    String leadChar = restValue.trim().substring(0, 1);
+    var leadChar = restValue.trim().substring(0, 1);
     switch (leadChar) {
       case '"':
         result = _handleDQ();

@@ -162,7 +162,7 @@ void test_validateNameValuePair() {
 /// Test JSON formats
 ///
 /// Some example use cases that include edge cases too
-/// TODO: Extend the examples with more cases
+/// TODO: Verify the testJsonObjects test items
 ///
 void testJsonObjects() {
   JsonValidator jv = JsonValidator("");
@@ -201,7 +201,7 @@ void testJsonObjects() {
   ///
   bool result3 = jv.validate(
       "{\"arrayMain\": [1, \"fal{se\", true, null, -5], \"kvo\": 34.4, \"expon\": 1.05e-3}");
-  expect(result3, true);
+  expect(result3, false);
 
   /// JSON 4
   ///
@@ -215,7 +215,7 @@ void testJsonObjects() {
   ///
   bool result4 =
       jv.validate("{\"arrayMain\": [1, \"fal]se\", false, null, -5, -1.25e7]}");
-  expect(result4, true);
+  expect(result4, false);
 
   /// JSON 5
   ///
@@ -227,4 +227,9 @@ void testJsonObjects() {
   bool result5 = jv.validate(
       "[{\"arrayMain\": [1, \"fal]se\", false, null, -5, -1.25e7]}, {\"test\": true}]");
   expect(result5, true);
+
+  /// JSON 6
+  bool result6 = jv.validate(
+      "{\"keys\": [{\"kty\":\"RSA\",\"n\":\"_6iKyYXNaobNWiqDPGShr1qiYfElJfPUyIy3MKrKLBNAx9mC6I0YPhcpVLsm-BK5NePwe-gbhTrNMs8TTQG-CHx-mNXsgRlEwUvOtVOT-NyFKIlDW6zbfqCMX6sCTHkbGRsg51asxChZZUSMPvSuMFMuCKrQvJ8ez9RwMvqjL8MvY06La-izj95BGZmtGleOVHXosm9EWefjRFelXiiSf2aObR1bEn9Qt1GBUZ1znyDE0_8lhQUy-rmzjmolts-ZXE6Wp95MgprUC3IH1JmrSJtYjCtYutjDa-9XU3baPNrlsyb_43Lg49hWCHw1nIqEGRDwmCgVTnt81PzoNdj4jQ==\",\"e\":\"AQAB\",\"alg\":\"RS256\",\"use\":\"sig\",\"kid\":\"0bdab256-2eb0-11eb-8ca8-afffbde2b643\"}]}");
+  expect(result6, false);
 }

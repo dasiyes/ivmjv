@@ -10,6 +10,7 @@ void main() {
       testJValidInit();
       testValidateFunctionMain();
       test_validateNameValuePair();
+      testJsonObjects();
     });
   });
 }

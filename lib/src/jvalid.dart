@@ -127,7 +127,7 @@ class JsonValidator {
 
     // Step-1
     // <<<<================= Getting first PairName string ================>>>>
-    firstPairName = tokens.substring(0, colonIndex).trim();
+    firstPairName = tokens.trim().substring(0, colonIndex).trim();
 
     if (_getSuroundingChars(firstPairName) == '""') {
       _validPairName = true;
@@ -320,7 +320,7 @@ class JsonValidator {
       String arrayBody = parsedArray.substring(1, parsedArray.length - 1);
       int commaIndex = -1;
       do {
-        String firstChar = arrayBody.substring(0, 1);
+        String firstChar = arrayBody.trim().substring(0, 1);
 
         // Process arrayBody that starts with either one of '[' or '{'
         if (firstChar == '{' || firstChar == '[') {
@@ -391,7 +391,7 @@ class JsonValidator {
         commaIndex = arrayBody.indexOf(',');
 
         if (commaIndex > -1) {
-          arrayElement = arrayBody.substring(0, commaIndex);
+          arrayElement = arrayBody.trim().substring(0, commaIndex);
         } else {
           arrayElement = arrayBody.substring(0);
         }
@@ -399,7 +399,7 @@ class JsonValidator {
         retval = _getValueObject(arrayElement);
 
         // Cut out the first element
-        arrayBody = arrayBody.substring(commaIndex + 1);
+        arrayBody = arrayBody.trim().substring(commaIndex + 1);
         if (retval == 'invalid') {
           validity = false;
           break;

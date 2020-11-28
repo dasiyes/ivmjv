@@ -11,13 +11,20 @@ class JsonValidator {
   String json;
   bool _validity = false;
 
-  JsonValidator(this.json);
+  JsonValidator([String json]) {
+    if (json.isNotEmpty || json != null) {
+      this.json = json.replaceAll(RegExp(r'\s'), '');
+    } else {
+      this.json = '';
+    }
+  }
 
   bool validate([String nestedJson]) {
     if (nestedJson == null) {
       json = json;
     } else {
-      json = nestedJson;
+      final flattenedJson = nestedJson.replaceAll(RegExp(r'\s'), '');
+      json = flattenedJson;
     }
     // An empty string is not a valid json object
     if (json.isEmpty) return false;

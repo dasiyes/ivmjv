@@ -19,7 +19,7 @@ class JsonValidator {
     }
   }
 
-  bool validate([String nestedJson]) {
+  Future<bool> validate([String nestedJson]) async {
     if (nestedJson == null) {
       json = json;
     } else {
@@ -35,7 +35,7 @@ class JsonValidator {
     }
 
     // Do cycling validation of the Name-Value Pairs
-    return _validateNameValuePair(json);
+    return await _validateNameValuePair(json);
   }
 
   /// An object is an unordered collection of zero or more name/value pairs, where:
@@ -45,7 +45,7 @@ class JsonValidator {
   ///
   /// An array is an ordered sequence of zero or more values.
   ///
-  bool _validateNameValuePair(String value) {
+  Future<bool> _validateNameValuePair(String value) async {
     var _value = value.trim();
 
     // define the function exit point
@@ -57,7 +57,7 @@ class JsonValidator {
     do {
       // cycling validation until the entire string is validated or
       // _value 'invalid' is sent.
-      _value = _validateFirstKeyValuePair(_value);
+      _value = await _validateFirstKeyValuePair(_value);
 
       // validate an object
       if (_value == 'invalid') {
@@ -75,7 +75,7 @@ class JsonValidator {
   ///
   /// This function esentialy validates the first token with key-value pair; If it is valid then the function returns is a string of the rest of the provided string (the first k-v pair removed) that needs to be validate.
   ///
-  String _validateFirstKeyValuePair(String value) {
+  Future<String> _validateFirstKeyValuePair(String value) async {
     //Step-0
     // <<<< ================ Prep & Analyses =============================>>>>
     var _validPairName = false;
@@ -90,7 +90,7 @@ class JsonValidator {
 
     // Verify the array
     if (spc == '[]') {
-      tokens = _getValueObject(value);
+      tokens = await _getValueObject(value);
     }
 
     // Remove the object's lead and closing chars or not
@@ -152,7 +152,7 @@ class JsonValidator {
     // Extract the Value part from the key-value token;
     if (_possibleFC.contains(valueStartsWith)) {
       firstPairValue =
-          _getValueObject(tokens.trim().substring(colonIndex + 1).trim());
+          await _getValueObject(tokens.trim().substring(colonIndex + 1).trim());
 
       // If the value part starts with '[' the value may be a valid ARRAY and
       // the commaIndex needs to be redefined
@@ -206,7 +206,7 @@ class JsonValidator {
   }
 
   /// This function will extract the first pair's value
-  String _getValueObject(String restValue) {
+  Future<String> _getValueObject(String restValue) async {
     String result;
     var commaIndex = restValue.indexOf(',');
 
@@ -326,13 +326,13 @@ class JsonValidator {
 
     /// Validate an Object previously parsed
     ///
-    bool _validateObject(String parsedObject) {
-      return validate(parsedObject);
+    Future<bool> _validateObject(String parsedObject) async {
+      return await validate(parsedObject);
     }
 
     /// Validate an ARRAY previously parsed
     ///
-    bool _validateArray(String parsedArray) {
+    Future<bool> _validateArray(String parsedArray) async {
       var validity = false;
       String retval;
       var arrayBody = parsedArray.substring(1, parsedArray.length - 1);
@@ -348,10 +348,10 @@ class JsonValidator {
             if (firstChar == '{') {
               var validityNestedElement = validate(nestedElement);
 
-              if (validityNestedElement) {
+              if (await validityNestedElement) {
                 if (arrayBody.trim().length == nestedElement.trim().length) {
                   arrayBody = '';
-                  validity = validityNestedElement;
+                  validity = await validityNestedElement;
                 } else if (arrayBody.length > nestedElement.length + 1) {
                   // cutting the first (verified) element
                   arrayBody = arrayBody.substring(nestedElement.length).trim();
@@ -375,7 +375,7 @@ class JsonValidator {
                 break;
               }
             } else if (firstChar == '[') {
-              if (_validateArray(nestedElement)) {
+              if (await _validateArray(nestedElement)) {
                 if (arrayBody.trim().length == nestedElement.length) {
                   arrayBody = '';
                 } else if (arrayBody.length > nestedElement.length) {
@@ -414,7 +414,7 @@ class JsonValidator {
           arrayElement = arrayBody.substring(0);
         }
         // there is no nesting - verify the element
-        retval = _getValueObject(arrayElement);
+        retval = await _getValueObject(arrayElement);
 
         // Cut out the first element
         arrayBody = arrayBody.trim().substring(commaIndex + 1);
@@ -500,7 +500,7 @@ class JsonValidator {
     ///           end-object
     ///  member = string name-separator value
     ///
-    String _handleObject() {
+    Future<String> _handleObject() async {
       // Invalidate smaller and not valid
       if (restValue.length == 1 ||
           (restValue.length == 2 && restValue != '{}')) {
@@ -513,7 +513,7 @@ class JsonValidator {
       commaIndex = restValue.indexOf(',', parsedObject.length);
 
       // Validate an object and return BOOL for its validity
-      if (_validateObject(parsedObject)) {
+      if (await _validateObject(parsedObject)) {
         if (commaIndex == -1) {
           // Successfully verified object as last pair's value
           return '';
@@ -535,7 +535,7 @@ class JsonValidator {
     ///
     /// There is no requirement that the values in an array be of the same
     /// type.
-    String _handleArray() {
+    Future<String> _handleArray() async {
       // Identify an empty array ( 0 elements, allowed by the standard)
       if (restValue.startsWith('[') &&
           restValue.endsWith(']') &&
@@ -549,7 +549,7 @@ class JsonValidator {
       commaIndex = restValue.indexOf(',', parsedArray.length);
 
       // Validate an array and return BOOL for its validity
-      if (_validateArray(parsedArray)) {
+      if (await _validateArray(parsedArray)) {
         if (commaIndex == -1) {
           // Successfully verified array as last pair's value
           return '';
@@ -572,10 +572,10 @@ class JsonValidator {
         result = _handleDQ();
         break;
       case '[':
-        result = _handleArray();
+        result = await _handleArray();
         break;
       case '{':
-        result = _handleObject();
+        result = await _handleObject();
         break;
       case 't':
         result = _handleTFN();

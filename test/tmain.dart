@@ -6,7 +6,7 @@ import 'jvalid/test_jvalid.dart';
 void main() {
   group('JValid', () {
     /// Test suite for proprietary JSON validation lib
-    test('Function validate() testing...', () {
+    test('Function validate() testing...', () async {
       testJValidInit();
       testValidateFunctionMain();
       test_validateNameValuePair();

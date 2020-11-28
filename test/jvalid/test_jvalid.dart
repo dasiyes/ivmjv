@@ -4,25 +4,25 @@ import 'package:test/test.dart';
 /// Test jvalid.dart initiation
 ///
 /// Test class instantiation and validate() function initiation.
-void testJValidInit() {
+void testJValidInit() async {
   /// Test validate function initiation with empty parameter.
   var jv1 = JsonValidator('');
-  var jv_result1 = jv1.validate();
+  var jv_result1 = await jv1.validate();
   expect(jv_result1, false);
 
   /// Test validate function initiation with empty ({}) json string).
   var jv2 = JsonValidator('{}');
-  var jv_result2 = jv2.validate();
+  var jv_result2 = await jv2.validate();
   expect(jv_result2, true);
 
   /// Test validate function initiation with simple json value param provided at class instantiation.
   var jv3 = JsonValidator('{\"name\": \"test\", \"value\": 1}');
-  var jv_result3 = jv3.validate();
+  var jv_result3 = await jv3.validate();
   expect(jv_result3, true);
 
   /// Test validate function initiation with simple json value param provided as direct validate() param.
   var jv4 = JsonValidator('');
-  var jv_result4 = jv4.validate('{\"name\": \"test\", \"value\": 1}');
+  var jv_result4 = await jv4.validate('{\"name\": \"test\", \"value\": 1}');
   expect(jv_result4, true);
 }
 
@@ -37,93 +37,93 @@ void testJValidInit() {
 ///   - 3 literal names: **true**, **false** or **null**
 /// * structural chars: ":", ",", "[", "]", "{", "}"
 ///
-void testValidateFunctionMain() {
+void testValidateFunctionMain() async {
   /// Test the validation of the name(key) & value
   /// 1) valid name/key & value
   var jv = JsonValidator('');
-  var result1 = jv.validate('{\"name\": \"test\", \"value\": 1}');
+  var result1 = await jv.validate('{\"name\": \"test\", \"value\": 1}');
   expect(result1, true);
 
   /// invalid key/name missing leading qm
-  var result2 = jv.validate('{name\": \"test\"}');
+  var result2 = await jv.validate('{name\": \"test\"}');
   expect(result2, false);
 
   /// invalid string value missing trailing qm
-  var result6 = jv.validate('{\"name\": \"test}');
+  var result6 = await jv.validate('{\"name\": \"test}');
   expect(result6, false);
 
   /// invalid string value missing leading qm
-  var result3 = jv.validate('{\"name\": test\"}');
+  var result3 = await jv.validate('{\"name\": test\"}');
   expect(result3, false);
 
   /// 2) validating the 3 lietral vlaue: false, true and null
 
   /// valid 'false' value
-  var result4 = jv.validate('{\"name\": false}');
+  var result4 = await jv.validate('{\"name\": false}');
   expect(result4, true);
 
   /// invalid 'false' value
-  var result5 = jv.validate('{\"name\": false\"}');
+  var result5 = await jv.validate('{\"name\": false\"}');
   expect(result5, false);
 
   /// valid 'true' value
-  var result7 = jv.validate('{\"name\": true}');
+  var result7 = await jv.validate('{\"name\": true}');
   expect(result7, true);
 
   /// invalid 'true' value
-  var result8 = jv.validate('{\"name\": true\"}');
+  var result8 = await jv.validate('{\"name\": true\"}');
   expect(result8, false);
 
   /// valid 'null' value
-  var result9 = jv.validate('{\"name\": null}');
+  var result9 = await jv.validate('{\"name\": null}');
   expect(result9, true);
 
   /// invalid 'null' value
-  var result10 = jv.validate('{\"name\": null\"}');
+  var result10 = await jv.validate('{\"name\": null\"}');
   expect(result10, false);
 
   /// 3) validating NUMBER values
 
   /// valid + 'number' value
-  var result11 = jv.validate('{\"positive\": 230}');
+  var result11 = await jv.validate('{\"positive\": 230}');
   expect(result11, true);
 
   /// valid - 'number' value
-  var result12 = jv.validate('{\"name\": -230}');
+  var result12 = await jv.validate('{\"name\": -230}');
   expect(result12, true);
 
   /// valid exp 'numbr' value
-  var result13 = jv.validate('{\"name\": 1.5e-3}');
+  var result13 = await jv.validate('{\"name\": 1.5e-3}');
   expect(result13, true);
 
   /// invalid positive 'numbr' value
-  var result14 = jv.validate('{\"name\": +1.5}');
+  var result14 = await jv.validate('{\"name\": +1.5}');
   expect(result14, false);
 
   /// 4) validation of empty structural objects '[]' and '{}'
 
   /// valid 'empty object - {}' value
-  var result15 = jv.validate('{\"empty_object\": {}}');
+  var result15 = await jv.validate('{\"empty_object\": {}}');
   expect(result15, true);
 
   /// valid 'empty array - []' value
-  var result16 = jv.validate('{\"empty_array\": []}');
+  var result16 = await jv.validate('{\"empty_array\": []}');
   expect(result16, true);
 
   /// invalid 1 'array - [' value
-  var result17 = jv.validate('{\"empty_array\": [}');
+  var result17 = await jv.validate('{\"empty_array\": [}');
   expect(result17, false);
 
   /// invalid 2 'array - [}' value
-  var result18 = jv.validate('{\"empty_array\": [}}');
+  var result18 = await jv.validate('{\"empty_array\": [}}');
   expect(result18, false);
 
   /// invalid 1 'object - {[space]' value
-  var result19 = jv.validate('{\"empty_array\": { }');
+  var result19 = await jv.validate('{\"empty_array\": { }');
   expect(result19, false);
 
   /// invalid 2 'object - {' value [object.length == 1]
-  var result20 = jv.validate('{\"empty_array\": {}');
+  var result20 = await jv.validate('{\"empty_array\": {}');
   expect(result20, false);
 }
 
@@ -136,26 +136,26 @@ void testValidateFunctionMain() {
 /// * if parameter '_value' returned by _validateFirstKeyValuePair(_value)
 /// == '' => true
 ///
-void test_validateNameValuePair() {
+void test_validateNameValuePair() async {
   /// value - empty string
-  JsonValidator jv = JsonValidator("");
-  bool result1 = jv.validate(" ");
+  var jv = JsonValidator('');
+  var result1 = await jv.validate(' ');
   expect(result1, false);
 
   /// value length = 6 chars {"":n}
-  bool result2 = jv.validate("{\"\":1}");
+  var result2 = await jv.validate('{\"\":1}');
   expect(result2, true);
 
   /// value length < 6 chars {":n}
-  bool result3 = jv.validate("{\":1}");
+  var result3 = await jv.validate('{\":1}');
   expect(result3, false);
 
   /// value == invalid => false
-  bool result4 = jv.validate("{\"test\":invalid}");
+  var result4 = await jv.validate('{\"test\":invalid}');
   expect(result4, false);
 
   /// value == "invalid" => true
-  bool result5 = jv.validate("{\"test\":\"invalid\"}");
+  var result5 = await jv.validate('{\"test\":\"invalid\"}');
   expect(result5, true);
 }
 
@@ -164,7 +164,7 @@ void test_validateNameValuePair() {
 /// Some example use cases that include edge cases too
 /// TODO: Verify the testJsonObjects test items
 ///
-void testJsonObjects() {
+void testJsonObjects() async {
   var jv = JsonValidator('');
 
   /// JSON 1  [expecct TRUE]
@@ -177,14 +177,14 @@ void testJsonObjects() {
   ///     - key/name : array
   ///     - key/name : number
   ///
-  var result1 = jv.validate(
+  var result1 = await jv.validate(
       '{\"nameMain\": \"test\", \"arrayMain\": [{\"name\": \"obj-1\", \"name2\": \"obj-2\"}, {\"array\": [1,2,4]}, {\"name3\": -3}]}');
   expect(result1, true);
 
   /// JSON 2  [expecct TRUE]
   /// JSON 1 +
   /// - key/name : number
-  var result2 = jv.validate(
+  var result2 = await jv.validate(
       '{\"nameMain\": \"test\", \"arrayMain\": [{\"name\": \"obj-1\", \"name2\": \"obj-2\"}, {\"array\": [1,2,4]}, {\"name3\": -3}], \"kvo\": 34}');
   expect(result2, true);
 
@@ -199,7 +199,7 @@ void testJsonObjects() {
   /// - kye/name : decimal number
   /// - key/name : exp number
   ///
-  var result3 = jv.validate(
+  var result3 = await jv.validate(
       '{"arrayMain": [1, "fal{se", true, null, -5], "kvo": 34.4, "expon": 1.05e-3}');
   expect(result3, true);
 
@@ -214,8 +214,8 @@ void testJsonObjects() {
   ///   - negative exp number
   /// SPECIAL: "]" char within quoted string
   ///
-  var result4 =
-      jv.validate('{\"arrayMain\": [1, \"fal]se\", false, null, -5, -1.25e7]}');
+  var result4 = await jv
+      .validate('{\"arrayMain\": [1, \"fal]se\", false, null, -5, -1.25e7]}');
   expect(result4, true);
 
   /// JSON 5 [expecct TRUE]
@@ -225,7 +225,7 @@ void testJsonObjects() {
   ///   - object
   ///  ... etc.
   ///
-  var result5 = jv.validate(
+  var result5 = await jv.validate(
       '[{\"arrayMain\": [1, \"fal]se\", false, null, -5, -1.25e7]}, {\"test\": true}]');
   expect(result5, true);
 
@@ -233,7 +233,7 @@ void testJsonObjects() {
   ///
   /// format of JWKS with single key in the array
   ///
-  var result6 = jv.validate(
+  var result6 = await jv.validate(
       '{\"keys\": [{\"kty\":\"RSA\",\"n\":\"_6iKyYXNaobNWiqDPGShr1qiYfElJfPUyIy3MKrKLBNAx9mC6I0YPhcpVLsm-BK5NePwe-gbhTrNMs8TTQG-CHx-mNXsgRlEwUvOtVOT-NyFKIlDW6zbfqCMX6sCTHkbGRsg51asxChZZUSMPvSuMFMuCKrQvJ8ez9RwMvqjL8MvY06La-izj95BGZmtGleOVHXosm9EWefjRFelXiiSf2aObR1bEn9Qt1GBUZ1znyDE0_8lhQUy-rmzjmolts-ZXE6Wp95MgprUC3IH1JmrSJtYjCtYutjDa-9XU3baPNrlsyb_43Lg49hWCHw1nIqEGRDwmCgVTnt81PzoNdj4jQ==\",\"e\":\"AQAB\",\"alg\":\"RS256\",\"use\":\"sig\",\"kid\":\"0bdab256-2eb0-11eb-8ca8-afffbde2b643\"}]}');
   expect(result6, true);
 
@@ -241,23 +241,23 @@ void testJsonObjects() {
   ///
   /// ERROR: Not quoted string value not in (true, false, null).
   ///
-  var result7 = jv.validate(
+  var result7 = await jv.validate(
       '{\"arrayMain\": [1, \"fal]se\", something, null, -5, -1.25e7]}');
   expect(result7, false);
 
-  /// JSON 7  [expect FALSE]
+  /// JSON 8  [expect FALSE]
   ///
   /// ERROR: additional double qoute mark.
   ///
-  var result8 = jv
+  var result8 = await jv
       .validate('{\"arrayMain\": [1, \"\"fal]se\", false, null, -5, -1.25e7]}');
   expect(result8, false);
 
-  /// JSON 8 [expect TRUE]
+  /// JSON 9 [expect TRUE]
   ///
   /// TEST: testing json strings for whitespaces (CRLF, LF, TAB, SPACE)
   ///
-  var result9 = jv.validate('''{
+  var result9 = await jv.validate('''{
   "keys": [
     {
       "alg": "RS256",

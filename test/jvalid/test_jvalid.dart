@@ -6,7 +6,7 @@ import 'package:test/test.dart';
 /// Test class instantiation and validate() function initiation.
 void testJValidInit() async {
   /// Test validate function initiation with empty parameter.
-  var jv1 = JsonValidator('');
+  var jv1 = JsonValidator();
   var jv_result1 = await jv1.validate();
   expect(jv_result1, false);
 
@@ -40,7 +40,7 @@ void testJValidInit() async {
 void testValidateFunctionMain() async {
   /// Test the validation of the name(key) & value
   /// 1) valid name/key & value
-  var jv = JsonValidator('');
+  var jv = JsonValidator();
   var result1 = await jv.validate('{\"name\": \"test\", \"value\": 1}');
   expect(result1, true);
 
@@ -138,7 +138,7 @@ void testValidateFunctionMain() async {
 ///
 void test_validateNameValuePair() async {
   /// value - empty string
-  var jv = JsonValidator('');
+  var jv = JsonValidator();
   var result1 = await jv.validate(' ');
   expect(result1, false);
 
@@ -165,7 +165,7 @@ void test_validateNameValuePair() async {
 /// TODO: Verify the testJsonObjects test items
 ///
 void testJsonObjects() async {
-  var jv = JsonValidator('');
+  var jv = JsonValidator();
 
   /// JSON 1  [expecct TRUE]
   /// - key/name : string

@@ -12,7 +12,9 @@ class JsonValidator {
   bool _validity = false;
 
   JsonValidator([String json]) {
-    if (json.isNotEmpty || json != null) {
+    if (json == null) {
+      this.json = '';
+    } else if (json.isNotEmpty || json != null) {
       this.json = json.replaceAll(RegExp(r'\s'), '');
     } else {
       this.json = '';

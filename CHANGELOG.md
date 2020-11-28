@@ -1,3 +1,5 @@
+v. 0.1.5    fixes in class constructor
+
 v. 0.1.4    async validation implemented
 
 v. 0.1.3    fix for trimming whitespaces (CRLF, LF, TAB) from json string

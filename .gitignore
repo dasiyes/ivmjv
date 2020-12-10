@@ -16,3 +16,4 @@ Dart_Packages.xml
 *.aqueduct.pid
 # My own files to exclude from git repo
 _my_files
+test/coverage
